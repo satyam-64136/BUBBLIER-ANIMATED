@@ -87,12 +87,12 @@ body {
   animation: scrollBounce 2s ease infinite;
 }
 
-/* ─── Glass morphism — dark monochrome ─── */
+/* ─── Premium UI Elements (Minimal replacing heavy glass) ─── */
 .glass {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 /* ─── Brand logo text ─── */
@@ -110,33 +110,18 @@ body {
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* ─── Decorative bubbles ─── */
-.bubble-decoration {
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
 /* ─── Card styles — dark premium ─── */
 .cafe-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .cafe-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-6px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.02);
 }
 
 /* ─── Canvas rendering ─── */
@@ -148,4 +133,13 @@ body {
 /* ─── Smooth transitions ─── */
 .bg-transition {
   transition: background-color 0.1s linear;
+}
+
+/* ─── Hide scrollbar for horizontal tab containers ─── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

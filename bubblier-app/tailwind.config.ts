@@ -23,11 +23,7 @@ const config: Config = {
       },
       animation: {
         "ken-burns": "kenBurns 20s ease-in-out infinite alternate",
-        float: "float 6s ease-in-out infinite",
-        "float-delayed": "float 6s ease-in-out 2s infinite",
-        "float-slow": "float 8s ease-in-out 1s infinite",
         "pulse-soft": "pulseSoft 3s ease-in-out infinite",
-        "bounce-gentle": "bounceGentle 2s ease-in-out infinite",
         "fade-in-up": "fadeInUp 0.8s ease-out forwards",
         shimmer: "shimmer 2s ease-in-out infinite",
       },
@@ -36,17 +32,9 @@ const config: Config = {
           "0%": { transform: "scale(1) translate(0, 0)" },
           "100%": { transform: "scale(1.15) translate(-2%, -1%)" },
         },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" },
-        },
         pulseSoft: {
           "0%, 100%": { opacity: "0.6" },
           "50%": { opacity: "1" },
-        },
-        bounceGentle: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-8px)" },
         },
         fadeInUp: {
           "0%": { opacity: "0", transform: "translateY(30px)" },

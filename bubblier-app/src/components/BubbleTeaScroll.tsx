@@ -17,7 +17,7 @@ import {
 import LoadingScreen from "./LoadingScreen";
 
 const TOTAL_FRAMES = 197;
-const FRAME_PATH = "/sequence/frame_";
+const FRAME_PATH = "/assets/images/sequence/frame_";
 const FRAME_EXT = ".jpg";
 
 // Scroll beat definitions — non-overlapping ranges with clean gaps
@@ -30,7 +30,7 @@ const BEATS = [
   },
   {
     id: "ingredients",
-    title: "INGREDIENTS FALL\nINTO PLACE",
+    title: "INGREDIENTS\nFALL INTO PLACE",
     subtitle: "Every element begins with intention.",
     range: [0.26, 0.42] as [number, number],
   },
@@ -92,7 +92,6 @@ export default function BubbleTeaScroll() {
       });
     };
 
-    // Load frames in batches for performance
     const loadBatch = async (startIdx: number, batchSize: number) => {
       const promises: Promise<void>[] = [];
       for (
@@ -147,7 +146,7 @@ export default function BubbleTeaScroll() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Render frame on canvas
+  // Render frame on canvas — shifted right on desktop
   const renderFrame = useCallback(
     (frameIndex: number) => {
       const canvas = canvasRef.current;
@@ -159,25 +158,30 @@ export default function BubbleTeaScroll() {
       const img = images[frameIndex];
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
+      const isDesktop = canvasWidth >= 1024;
 
-      // Clear canvas
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
       // Contain-fit scaling
       const imgAspect = img.naturalWidth / img.naturalHeight;
-      const canvasAspect = canvasWidth / canvasHeight;
+
+      // On desktop, use only 65% right portion of screen for the product
+      const viewWidth = isDesktop ? canvasWidth * 0.65 : canvasWidth;
+      const viewOffsetX = isDesktop ? canvasWidth * 0.35 : 0;
+
+      const viewAspect = viewWidth / canvasHeight;
 
       let drawWidth: number, drawHeight: number, drawX: number, drawY: number;
 
-      if (canvasAspect > imgAspect) {
+      if (viewAspect > imgAspect) {
         drawHeight = canvasHeight;
         drawWidth = drawHeight * imgAspect;
-        drawX = (canvasWidth - drawWidth) / 2;
+        drawX = viewOffsetX + (viewWidth - drawWidth) / 2;
         drawY = 0;
       } else {
-        drawWidth = canvasWidth;
+        drawWidth = viewWidth;
         drawHeight = drawWidth / imgAspect;
-        drawX = 0;
+        drawX = viewOffsetX;
         drawY = (canvasHeight - drawHeight) / 2;
       }
 
@@ -186,7 +190,7 @@ export default function BubbleTeaScroll() {
     []
   );
 
-  // Update frame on scroll — NO color transition
+  // Update frame on scroll
   useMotionValueEvent(smoothProgress, "change", (latest) => {
     const frameIndex = Math.min(
       Math.floor(latest * (TOTAL_FRAMES - 1)),
@@ -234,24 +238,27 @@ export default function BubbleTeaScroll() {
         className="relative"
         style={{ height: "500vh" }}
       >
-        {/* Sticky wrapper — fixed dark bg */}
+        {/* Sticky wrapper */}
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-brand-dark">
-          {/* Canvas — dominant, centered */}
+          {/* Canvas — full screen, product drawn shifted-right on desktop */}
           <canvas
             ref={canvasRef}
             className="absolute inset-0 w-full h-full frame-canvas"
           />
 
-          {/* Text overlays — positioned at bottom-left to avoid product */}
+          {/* Text overlays */}
           <div className="absolute inset-0 z-10 pointer-events-none">
             {beatElements}
           </div>
 
-          {/* Subtle top vignette */}
+          {/* Top vignette */}
           <div className="absolute top-0 left-0 right-0 h-32 z-[5] pointer-events-none bg-gradient-to-b from-[#050505]/60 to-transparent" />
 
           {/* Bottom vignette */}
           <div className="absolute bottom-0 left-0 right-0 h-48 z-[5] pointer-events-none bg-gradient-to-t from-[#050505]/70 to-transparent" />
+
+          {/* Desktop: Left panel subtle gradient for text readability */}
+          <div className="hidden lg:block absolute top-0 bottom-0 left-0 w-[42%] z-[4] pointer-events-none bg-gradient-to-r from-[#050505] via-[#050505]/90 to-transparent" />
         </div>
       </div>
     </>
@@ -259,6 +266,7 @@ export default function BubbleTeaScroll() {
 }
 
 // ─── Beat Overlay Component ─────────────────────
+// Desktop: positioned left | Mobile: positioned bottom-center
 
 interface BeatOverlayProps {
   beat: {
@@ -283,25 +291,25 @@ function BeatOverlay({ beat, scrollProgress }: BeatOverlayProps) {
   const y = useTransform(
     scrollProgress,
     [start, start + 0.03, end - 0.03, end],
-    [20, 0, 0, -20]
+    [25, 0, 0, -25]
   );
 
   return (
     <motion.div
-      className="absolute bottom-0 left-0 right-0 flex flex-col items-start justify-end px-8 md:px-16 lg:px-24 pb-16 md:pb-20 lg:pb-24"
+      className={`absolute inset-0 flex flex-col pointer-events-none
+        items-center justify-end text-center px-6 pb-20
+        lg:items-start lg:justify-center lg:text-left lg:px-12 xl:px-20 2xl:px-28 lg:pb-0 lg:max-w-[40%]`}
       style={{ opacity, y }}
     >
-      <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-left leading-[0.9] mb-4 whitespace-pre-line">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold tracking-tight leading-[0.9] mb-3 lg:mb-5 whitespace-pre-line">
         <span className="text-white/90 drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
           {beat.title}
         </span>
       </h2>
-      <p className="text-sm sm:text-base md:text-lg text-white/40 tracking-wide text-left max-w-md font-light drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+      <p className="text-sm lg:text-base xl:text-lg text-white/35 tracking-wide max-w-xs lg:max-w-sm font-light drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] leading-relaxed">
         {beat.subtitle}
       </p>
-
-      {/* Decorative accent */}
-      <div className="w-10 h-[1px] bg-white/10 mt-6" />
+      <div className="w-8 lg:w-10 h-[1px] bg-white/10 mt-5 lg:mt-8" />
     </motion.div>
   );
 }

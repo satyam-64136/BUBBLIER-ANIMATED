@@ -2,93 +2,62 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import Link from "next/link";
 import Image from "next/image";
+import { Droplet, Leaf, Milk, Hexagon } from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────
 
-const FEATURED_DRINKS = [
-  {
-    name: "Classic Brown Sugar",
-    description: "Rich brown sugar syrup with fresh milk tea & chewy tapioca pearls",
-    price: "₹249",
-    image: "/drinks/classic-milktea.png",
-    tag: "Bestseller",
-  },
-  {
-    name: "Taro Dream",
-    description: "Creamy taro blended to perfection with a sweetness that lingers",
-    price: "₹279",
-    image: "/drinks/taro.png",
-    tag: "New",
-  },
-  {
-    name: "Matcha Zen",
-    description: "Premium Japanese matcha layered with oat milk & honey pearls",
-    price: "₹299",
-    image: "/drinks/matcha.png",
-    tag: "Popular",
-  },
-  {
-    name: "Strawberry Blush",
-    description: "Fresh strawberry purée with popping boba & a hint of lychee",
-    price: "₹269",
-    image: "/drinks/strawberry.png",
-    tag: "Seasonal",
-  },
-];
-
 const INGREDIENTS = [
   {
-    icon: "🧋",
+    icon: <Droplet className="w-8 h-8 md:w-10 md:h-10 text-white/80" strokeWidth={1.5} />,
     name: "Tapioca Pearls",
     description: "Chewy, brown-sugar coated pearls cooked fresh every hour",
   },
   {
-    icon: "🍵",
+    icon: <Leaf className="w-8 h-8 md:w-10 md:h-10 text-white/80" strokeWidth={1.5} />,
     name: "Premium Tea",
     description: "Loose leaf Assam & oolong sourced from organic farms",
   },
   {
-    icon: "🥛",
+    icon: <Milk className="w-8 h-8 md:w-10 md:h-10 text-white/80" strokeWidth={1.5} />,
     name: "Fresh Milk",
     description: "Farm-fresh whole milk — no creamer, no compromise",
   },
   {
-    icon: "🍯",
+    icon: <Hexagon className="w-8 h-8 md:w-10 md:h-10 text-white/80" strokeWidth={1.5} />,
     name: "Natural Sweeteners",
     description: "Brown sugar, honey, and agave — nothing artificial",
   },
 ];
 
+const FAN_FAVORITES_PREVIEW = [
+  { name: "Matcha Milk Tea", image: "/assets/products/matcha.png" },
+  { name: "Taro Milk Tea", image: "/assets/products/taro.png" },
+  { name: "Earl Grey Milk Tea", image: "/assets/products/earl-grey.png" },
+  { name: "Strawberry Smoothie", image: "/assets/products/strawberry.png" },
+];
+
 // ─── Animation Variants ───────────────────────────
 
-const EASE_OUT: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
+const EASE_OUT: [number, number, number, number] = [0.25, 1, 0.5, 1];
 
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.15,
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.8, ease: EASE_OUT },
-  },
-};
-
-const scaleInVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.7, ease: EASE_OUT },
   },
 };
 
@@ -97,124 +66,11 @@ const scaleInVariants = {
 export default function CafeSection() {
   return (
     <div className="relative overflow-hidden bg-brand-dark">
-      {/* Featured Drinks Section */}
-      <FeaturedDrinks />
-
-      {/* Ingredients Section */}
       <IngredientsSection />
-
-      {/* About Section */}
-      <AboutSection />
-
-      {/* Final CTA */}
+      <FanFavoritesPreview />
+      <AboutPreview />
       <CTASection />
-
-      {/* Footer */}
-      <FooterSection />
     </div>
-  );
-}
-
-// ─── Featured Drinks ──────────────────────────────
-
-function FeaturedDrinks() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <section
-      ref={ref}
-      id="featured-drinks"
-      className="relative bg-brand-dark py-32 md:py-44 px-6 md:px-10"
-    >
-      <div className="max-w-7xl mx-auto">
-        {/* Section header */}
-        <motion.div
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-          className="mb-20 md:mb-28"
-        >
-          <motion.p
-            variants={itemVariants}
-            className="text-white/25 text-[11px] tracking-[0.5em] uppercase mb-5"
-          >
-            Our Menu
-          </motion.p>
-          <motion.h2
-            variants={itemVariants}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white/90 tracking-tight leading-[0.9] mb-6"
-          >
-            Fan Favorites
-          </motion.h2>
-          <motion.p
-            variants={itemVariants}
-            className="text-white/30 text-base md:text-lg max-w-lg font-light leading-relaxed"
-          >
-            Each drink, a small masterpiece — handcrafted with ingredients that speak for themselves.
-          </motion.p>
-        </motion.div>
-
-        {/* Drink grid */}
-        <motion.div
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
-        >
-          {FEATURED_DRINKS.map((drink) => (
-            <motion.div
-              key={drink.name}
-              variants={scaleInVariants}
-              className="cafe-card group cursor-pointer overflow-hidden"
-            >
-              {/* Image */}
-              <div className="relative h-64 md:h-72 overflow-hidden rounded-t-[20px]">
-                <Image
-                  src={drink.image}
-                  alt={drink.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
-                {/* Tag */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full text-[9px] tracking-[0.15em] uppercase font-medium bg-white/10 backdrop-blur-md text-white/70 border border-white/5">
-                    {drink.tag}
-                  </span>
-                </div>
-                {/* Image overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
-              </div>
-
-              {/* Content */}
-              <div className="p-5 md:p-6">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-base font-semibold text-white/85 tracking-tight">
-                    {drink.name}
-                  </h3>
-                  <span className="text-white/40 font-medium text-base ml-3 whitespace-nowrap">
-                    {drink.price}
-                  </span>
-                </div>
-                <p className="text-white/25 text-sm font-light leading-relaxed">
-                  {drink.description}
-                </p>
-
-                {/* Order button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-5 w-full py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white/60 hover:text-white/90 text-sm font-light tracking-wide transition-all duration-400 border border-white/[0.04]"
-                >
-                  Add to Order
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
   );
 }
 
@@ -222,158 +78,170 @@ function FeaturedDrinks() {
 
 function IngredientsSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
-    <section
-      ref={ref}
-      id="ingredients"
-      className="relative bg-brand-dark py-32 md:py-44 px-6 md:px-10"
-    >
-      {/* Subtle section divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
+    <section ref={ref} id="ingredients" className="relative bg-brand-dark py-32 md:py-48 px-6 md:px-10">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-28 bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="mb-20"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-start"
         >
-          <motion.p
-            variants={itemVariants}
-            className="text-white/25 text-[11px] tracking-[0.5em] uppercase mb-5"
-          >
-            What Goes In
-          </motion.p>
-          <motion.h2
-            variants={itemVariants}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white/90 tracking-tight leading-[0.9] mb-6"
-          >
-            Real Ingredients
-          </motion.h2>
-          <motion.p
-            variants={itemVariants}
-            className="text-white/30 text-base md:text-lg max-w-lg font-light leading-relaxed"
-          >
-            We believe great taste starts with honest ingredients. Nothing hidden, nothing fake.
-          </motion.p>
-        </motion.div>
+          {/* Left: Heading */}
+          <div className="lg:col-span-5 lg:sticky lg:top-40">
+            <motion.p variants={itemVariants} className="text-white/20 text-[11px] tracking-[0.5em] uppercase mb-5">
+              What Goes In
+            </motion.p>
+            <motion.h2 variants={itemVariants} className="text-4xl sm:text-5xl md:text-6xl font-bold text-white/90 tracking-tight leading-[1] mb-6">
+              Real Ingredients
+            </motion.h2>
+            <motion.p variants={itemVariants} className="text-white/30 text-base font-light max-w-sm leading-relaxed">
+              We believe great taste starts with honest ingredients. Nothing hidden, nothing fake.
+            </motion.p>
+          </div>
 
-        <motion.div
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5"
-        >
-          {INGREDIENTS.map((item) => (
-            <motion.div
-              key={item.name}
-              variants={itemVariants}
-              className="flex items-start gap-5 p-7 md:p-8 rounded-2xl bg-white/[0.03] border border-white/[0.04] hover:bg-white/[0.06] hover:border-white/[0.08] transition-all duration-500 group"
-            >
-              <span className="text-3xl md:text-4xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300 opacity-80">
-                {item.icon}
-              </span>
-              <div>
-                <h3 className="text-base font-semibold text-white/80 mb-1.5 tracking-tight">
+          {/* Right: Grid */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+            {INGREDIENTS.map((item) => (
+              <motion.div
+                key={item.name}
+                variants={itemVariants}
+                className="cafe-card p-10 group"
+              >
+                <div className="mb-6 opacity-80">{item.icon}</div>
+                <h3 className="text-lg font-semibold text-white/90 mb-2 tracking-tight">
                   {item.name}
                 </h3>
-                <p className="text-white/30 text-sm font-light leading-relaxed">
+                <p className="text-white/30 text-sm font-light leading-relaxed max-w-[28ch]">
                   {item.description}
                 </p>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>
   );
 }
 
-// ─── About Section ────────────────────────────────
+// ─── Fan Favorites Preview ────────────────────────
 
-function AboutSection() {
+function FanFavoritesPreview() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
-    <section
-      ref={ref}
-      id="about"
-      className="relative bg-brand-dark py-32 md:py-44 px-6 md:px-10"
-    >
-      {/* Subtle section divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
+    <section ref={ref} className="relative bg-brand-dark py-24 md:py-36 px-6 md:px-10">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-28 bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-center"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-center"
         >
-          {/* Text side */}
-          <div>
-            <motion.p
-              variants={itemVariants}
-              className="text-white/25 text-[11px] tracking-[0.5em] uppercase mb-5"
-            >
-              Our Story
+          {/* Left: Heading */}
+          <div className="lg:col-span-5">
+            <motion.p variants={itemVariants} className="text-brand-coral/60 text-[11px] tracking-[0.5em] uppercase mb-5">
+              Fan Favorites
             </motion.p>
-            <motion.h2
-              variants={itemVariants}
-              className="text-5xl sm:text-6xl md:text-7xl font-bold text-white/90 tracking-tight leading-[0.9] mb-8"
-            >
-              More Than<br />a Drink
+            <motion.h2 variants={itemVariants} className="text-4xl sm:text-5xl md:text-6xl font-bold text-white/90 tracking-tight leading-[1] mb-6">
+              What People Love
             </motion.h2>
-            <motion.p
-              variants={itemVariants}
-              className="text-white/30 text-base md:text-lg font-light leading-relaxed mb-6"
-            >
-              Bubblier was born from a simple idea: bubble tea should be made with
-              the same care as a barista&apos;s favourite espresso. We source our
-              ingredients from small farms, cook our pearls fresh every hour, and
-              craft every drink by hand.
+            <motion.p variants={itemVariants} className="text-white/30 text-base font-light max-w-sm mb-10 leading-relaxed">
+              The drinks our regulars keep coming back for.
             </motion.p>
-            <motion.p
-              variants={itemVariants}
-              className="text-white/30 text-base md:text-lg font-light leading-relaxed mb-10"
-            >
-              What started as a tiny corner stand is now a community of tea
-              lovers who believe flavour should never be compromised.
-            </motion.p>
-            <motion.button
-              variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-8 py-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-white/70 hover:text-white font-light text-sm tracking-wide transition-all duration-400 border border-white/[0.06]"
-            >
-              Visit Our Café →
-            </motion.button>
+            <motion.div variants={itemVariants}>
+              <Link href="/menu" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white font-light text-sm tracking-wide transition-all duration-400 border border-white/[0.06]">
+                View Full Menu
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
           </div>
 
-          {/* Visual side — minimal decorative card */}
-          <motion.div
-            variants={scaleInVariants}
-            className="relative"
-          >
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/[0.02] border border-white/[0.04] p-10 md:p-14 flex flex-col items-center justify-center">
-              {/* Large decorative emoji/icon */}
-              <span className="text-7xl md:text-8xl mb-8 opacity-60">🧋</span>
-              <p className="brand-text text-3xl md:text-4xl text-white/60 mb-3">
-                bubblier
-              </p>
-              <p className="text-white/20 text-xs tracking-[0.4em] uppercase font-light">
-                Since 2024
-              </p>
+          {/* Right: Grid */}
+          <div className="lg:col-span-7 grid grid-cols-2 gap-4 md:gap-5">
+            {FAN_FAVORITES_PREVIEW.map((drink) => (
+              <motion.div key={drink.name} variants={itemVariants} className="cafe-card group cursor-pointer overflow-hidden p-6 relative h-[280px] md:h-[320px] flex flex-col justify-end">
+                <div className="absolute inset-0 z-0 opacity-40 mix-blend-overlay bg-gradient-to-b from-transparent via-transparent to-black/80" />
+                <Image
+                  src={drink.image}
+                  alt={drink.name}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-contain p-4 group-hover:scale-105 transition-transform duration-700 ease-out z-0"
+                />
+                <div className="relative z-10 pt-4 border-t border-white/[0.04]">
+                  <h3 className="text-white/90 font-semibold text-sm sm:text-base leading-tight drop-shadow-md">
+                    {drink.name}
+                  </h3>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-              {/* Floating decorative elements */}
-              <div className="absolute top-8 right-10 w-3 h-3 rounded-full bg-white/[0.04] animate-float" />
-              <div className="absolute bottom-14 left-10 w-5 h-5 rounded-full bg-white/[0.03] animate-float-delayed" />
-              <div className="absolute top-1/3 left-8 w-2 h-2 rounded-full bg-white/[0.05] animate-float-slow" />
-            </div>
+// ─── About Preview ────────────────────────────────
+
+function AboutPreview() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
+
+  return (
+    <section ref={ref} className="relative bg-brand-dark py-24 md:py-36 px-6 md:px-10">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-28 bg-gradient-to-b from-transparent via-white/[0.06] to-transparent" />
+
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={containerVariants}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center"
+        >
+          {/* Visual side */}
+          <motion.div variants={itemVariants} className="cafe-card relative aspect-square md:aspect-[4/3] w-full overflow-hidden flex items-center justify-center p-10">
+            <Image
+              src="/assets/products/taro.png"
+              alt="Bubblier Taro"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-8 opacity-90 transition-transform duration-[1.5s] ease-out hover:scale-105"
+            />
           </motion.div>
+
+          {/* Text side */}
+          <div>
+            <motion.p variants={itemVariants} className="text-white/20 text-[11px] tracking-[0.5em] uppercase mb-5">
+              Our Story
+            </motion.p>
+            <motion.h2 variants={itemVariants} className="text-4xl sm:text-5xl md:text-6xl font-bold text-white/90 tracking-tight leading-[1] mb-8">
+              More Than<br />a Drink
+            </motion.h2>
+            <motion.p variants={itemVariants} className="text-white/30 text-base font-light leading-relaxed mb-6 max-w-md">
+              Bubblier was born from a simple idea: bubble tea should be made with
+              the same care as a barista&apos;s favourite espresso. We source our
+              ingredients from Taiwan and craft every drink by hand in Jaipur.
+            </motion.p>
+            <motion.div variants={itemVariants} className="pt-4">
+              <Link href="/about" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white font-light text-sm tracking-wide transition-all duration-400 border border-white/[0.06]">
+                Explore Our Process
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -384,20 +252,14 @@ function AboutSection() {
 
 function CTASection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
-    <section
-      ref={ref}
-      className="relative bg-brand-dark py-40 md:py-56 px-6 md:px-10"
-    >
-      {/* Ambient glow */}
+    <section ref={ref} className="relative bg-brand-dark py-36 md:py-48 px-6 md:px-10">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div
-          className="w-[500px] h-[500px] rounded-full opacity-[0.025]"
-          style={{
-            background: "radial-gradient(circle, white 0%, transparent 70%)",
-          }}
+          className="w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full opacity-[0.02]"
+          style={{ background: "radial-gradient(circle, white 0%, transparent 70%)" }}
         />
       </div>
 
@@ -405,88 +267,32 @@ function CTASection() {
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
         variants={containerVariants}
-        className="relative z-10 max-w-3xl mx-auto text-center"
+        className="relative z-10 max-w-2xl mx-auto text-center cafe-card p-12 md:p-20"
       >
-        <motion.p
-          variants={itemVariants}
-          className="text-white/20 text-[11px] tracking-[0.5em] uppercase mb-6"
-        >
+        <motion.p variants={itemVariants} className="text-white/20 text-[11px] tracking-[0.5em] uppercase mb-6">
           Ready?
         </motion.p>
-        <motion.h2
-          variants={itemVariants}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white/90 tracking-tight leading-[0.9] mb-8"
-        >
-          Your Next<br />Favorite Drink
+        <motion.h2 variants={itemVariants} className="text-4xl sm:text-5xl md:text-6xl font-bold text-white/90 tracking-tight leading-[1] mb-8">
+          Your Next Favorite Drink
         </motion.h2>
-        <motion.p
-          variants={itemVariants}
-          className="text-white/30 text-base md:text-lg font-light leading-relaxed mb-12 max-w-md mx-auto"
-        >
+        <motion.p variants={itemVariants} className="text-white/30 text-base font-light leading-relaxed mb-12 max-w-[32ch] mx-auto">
           Step into a Bubblier near you, or order online. Your perfect sip is waiting.
         </motion.p>
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="px-10 py-4 rounded-xl bg-white text-[#050505] font-medium text-sm tracking-wide hover:bg-white/90 transition-all duration-300"
-          >
-            Order Now
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="px-10 py-4 rounded-xl bg-white/[0.06] text-white/60 hover:text-white/90 font-light text-sm tracking-wide hover:bg-white/[0.12] transition-all duration-300 border border-white/[0.06]"
+        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            href="/menu"
+            className="inline-block w-full sm:w-auto px-10 py-3.5 rounded-xl bg-white text-[#050505] font-medium text-sm tracking-wide hover:bg-white/90 transition-all duration-300"
           >
             Explore Menu
-          </motion.button>
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-block w-full sm:w-auto px-10 py-3.5 rounded-xl bg-transparent text-white/60 hover:text-white/90 font-light text-sm tracking-wide transition-all duration-300 border border-white/[0.06] hover:border-white/[0.15]"
+          >
+            Contact Us
+          </Link>
         </motion.div>
       </motion.div>
     </section>
-  );
-}
-
-// ─── Footer ───────────────────────────────────────
-
-function FooterSection() {
-  return (
-    <footer id="footer" className="relative bg-brand-dark pt-16 pb-12 px-6 md:px-10 border-t border-white/[0.03]">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <h3 className="brand-text text-2xl text-white/70 mb-2">
-              bubblier
-            </h3>
-            <p className="text-white/20 text-sm font-light">
-              Crafted with love, served with a smile.
-            </p>
-          </div>
-
-          <div className="flex gap-10">
-            {["Menu", "Locations", "About", "Contact"].map((link) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                className="text-white/25 hover:text-white/60 text-[13px] font-light tracking-wide transition-colors duration-300"
-              >
-                {link}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 pt-8 border-t border-white/[0.03] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/15 text-xs font-light">
-            © 2024 Bubblier. All rights reserved.
-          </p>
-          <p className="text-white/15 text-xs font-light">
-            Made with 🧋 and a lot of love
-          </p>
-        </div>
-      </div>
-    </footer>
   );
 }
